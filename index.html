@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER_FOX – Neural Scan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
+        
+        :root {
+            --fox-orange: #f05a22;
+            --cyber-black: #0d0d0d;
+            --neural-gray: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cyber-black);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(240, 90, 34, 0.2);
+            border-radius: 1.5rem;
+        }
+
+        .fox-gradient {
+            background: linear-gradient(135deg, #f05a22 0%, #ff8c00 100%);
+        }
+
+        .neural-glow {
+            box-shadow: 0 0 30px rgba(240, 90, 34, 0.15);
+        }
+
+        .scanning-animation {
+            background: linear-gradient(to right, transparent, var(--fox-orange), transparent);
+            height: 2px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(400px); opacity: 0; }
+        }
+
+        .hidden-content { display: none; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="flex flex-col items-center mb-12 text-center">
+            <div class="w-20 h-20 mb-4 fox-gradient rounded-full flex items-center justify-center text-3xl shadow-lg">
+                <i class="fas fa-fox"></i>
+            </div>
+            <h1 class="text-4xl font-bold tracking-tight mb-2">CYBER_FOX <span class="text-orange-500">Neural Scan</span></h1>
+            <p class="text-gray-400 font-light">Simples para usar. Inteligente por dentro. Educativo na entrega.</p>
+        </header>
+
+        <!-- Main Input Section -->
+        <div class="glass-card p-6 md:p-10 mb-8 neural-glow">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="relative flex-grow">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-500">
+                        <i class="fas fa-link"></i>
+                    </span>
+                    <input type="text" id="targetUrl" placeholder="Ex: google.com" 
+                        class="w-full bg-black border border-gray-800 rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-orange-500 transition-all text-lg">
+                </div>
+                <button onclick="startNeuralScan()" id="scanBtn" class="fox-gradient px-8 py-4 rounded-xl font-bold text-white hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                    <i class="fas fa-microchip"></i> Executar
+                </button>
+            </div>
+            
+            <div class="mt-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="learningMode" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+                    </label>
+                    <span class="text-sm font-medium text-gray-300"><i class="fas fa-graduation-cap mr-1"></i> Modo Aprendizado</span>
+                </div>
+                <span class="text-xs text-gray-500">Stoic Engine v1.1 (Real Scan)</span>
+            </div>
+        </div>
+
+        <!-- Scanning State -->
+        <div id="loader" class="hidden-content text-center py-20 relative overflow-hidden glass-card">
+            <div class="scanning-animation"></div>
+            <div class="animate-pulse">
+                <i class="fas fa-brain text-5xl text-orange-500 mb-4"></i>
+                <p class="text-xl font-semibold">Analisando arquitetura neural...</p>
+                <p id="scanningStep" class="text-gray-500 text-sm mt-2 italic">Interceptando cabeçalhos HTTP...</p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="hidden-content space-y-8 animate-in fade-in duration-500">
+            <!-- Camada 1: Visual Imediata -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-gray-400 text-sm uppercase tracking-wider mb-2">Neural Score</h3>
+                    <div id="scoreRing" class="relative w-32 h-32 flex items-center justify-center rounded-full border-8 border-orange-500 border-t-transparent">
+                        <span id="scoreValue" class="text-4xl font-bold">0</span>
+                    </div>
+                </div>
+                
+                <div id="statusCard" class="glass-card p-6 flex flex-col items-center justify-center text-center col-span-1 md:col-span-2">
+                    <div id="statusIcon" class="text-5xl mb-3 text-green-500">
+                        <i class="fas fa-shield-check"></i>
+                    </div>
+                    <h2 id="statusTitle" class="text-2xl font-bold">Análise Concluída</h2>
+                    <p id="statusDesc" class="text-gray-400 mt-2 px-4"></p>
+                </div>
+            </div>
+
+            <!-- Camada 3: Insight Inteligente -->
+            <div class="glass-card p-6 border-l-4 border-orange-500">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500/20 p-3 rounded-lg text-orange-500">
+                        <i class="fas fa-lightbulb text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Insight da Raposa</h3>
+                        <p id="aiInsight" class="text-gray-300 leading-relaxed italic">
+                            Processando padrões de segurança...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Camada 2: Detalhamento -->
+            <div class="space-y-4" id="checksList">
+                <!-- Itens injetados via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Toast -->
+    <div id="errorToast" class="fixed bottom-8 right-8 bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl transform translate-y-20 transition-transform duration-300 flex items-center gap-3">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span id="errorMessage">Erro no processamento</span>
+    </div>
+
+    <script>
+        const apiKey = "AIzaSyDIqjVHu3m1ZcvyZeJHtJtLUeYSE5dM120"; // Runtime automatically provides this
+
+        async function startNeuralScan() {
+            const urlInput = document.getElementById('targetUrl').value.trim();
+            if (!urlInput) {
+                showError("Por favor, insira um domínio válido.");
+                return;
+            }
+
+            const domain = urlInput.replace(/^https?:\/\//, '').split('/')[0];
+
+            document.getElementById('scanBtn').disabled = true;
+            document.getElementById('results').classList.add('hidden-content');
+            document.getElementById('loader').classList.remove('hidden-content');
+            
+            const learningMode = document.getElementById('learningMode').checked;
+            
+            try {
+                updateStep("Consultando bases de segurança...");
+                
+                // Real data fetching
+                const [obsData, sslData] = await Promise.allSettled([
+                    fetchObservatoryData(domain),
+                    fetchSSLData(domain)
+                ]);
+
+                updateStep("Interpretando dados com Inteligência Neural...");
+
+                const checks = buildChecks(obsData, sslData, domain);
+                const score = computeScore(checks);
+
+                const prompt = `Analise estes resultados de segurança reais para o domínio ${domain}:
+                Score: ${score}/100
+                Checks: ${JSON.stringify(checks)}
+                
+                Gere um resumo (summary) de 1 frase para leigos e um insight (insight) inteligente e estratégico.
+                Retorne apenas JSON: {"summary": "...", "insight": "..."}`;
+
+                const aiData = await callGemini(prompt);
+
+                displayResults({
+                    score,
+                    summary: aiData.summary,
+                    insight: aiData.insight,
+                    checks
+                }, learningMode);
+
+            } catch (err) {
+                showError("Falha na varredura. Verifique a URL ou tente novamente.");
+                console.error(err);
+            } finally {
+                document.getElementById('loader').classList.add('hidden-content');
+                document.getElementById('scanBtn').disabled = false;
+            }
+        }
+
+        async function fetchObservatoryData(domain) {
+            updateStep("Auditando cabeçalhos HTTP...");
+            const response = await fetch(`https://http-observatory.security.mozilla.org/api/v2/analyze?host=${domain}`);
+            if (!response.ok) throw new Error('Observatory fail');
+            return await response.json();
+        }
+
+        async function fetchSSLData(domain) {
+            updateStep("Validando Certificado SSL/TLS...");
+            const response = await fetch(`https://api.ssllabs.com/api/v3/analyze?host=${domain}&publish=on&fromCache=on&maxAge=24`);
+            if (!response.ok) throw new Error('SSL Labs fail');
+            return await response.json();
+        }
+
+        function buildChecks(obsRes, sslRes, domain) {
+            const checks = [];
+            
+            // Fallback para quando as APIs falham ou estão processando
+            const obs = obsRes.status === 'fulfilled' ? obsRes.value : null;
+            const ssl = sslRes.status === 'fulfilled' ? sslRes.value : null;
+
+            // Check 1: HTTPS & SSL
+            const sslGrade = ssl?.endpoints?.[0]?.grade || "N/A";
+            checks.push({
+                name: "Certificado SSL/TLS",
+                status: (sslGrade === 'A' || sslGrade === 'A+') ? 'pass' : (sslGrade === 'B' || sslGrade === 'C') ? 'warn' : 'fail',
+                description: `Nota do certificado: ${sslGrade}.`,
+                explanation: "O SSL garante que a conversa entre seu navegador e o site seja privada e não possa ser lida por terceiros."
+            });
+
+            // Check 2: HSTS
+            const hasHSTS = obs?.tests?.['strict-transport-security']?.pass || false;
+            checks.push({
+                name: "HSTS Policy",
+                status: hasHSTS ? 'pass' : 'warn',
+                description: hasHSTS ? "HSTS ativo e configurado." : "HSTS ausente ou inválido.",
+                explanation: "O HSTS obriga o navegador a sempre usar HTTPS, prevenindo ataques que tentam 'rebaixar' a segurança da conexão."
+            });
+
+            // Check 3: CSP
+            const hasCSP = obs?.tests?.['content-security-policy']?.pass || false;
+            checks.push({
+                name: "Content Security Policy (CSP)",
+                status: hasCSP ? 'pass' : 'fail',
+                description: hasCSP ? "CSP detectado e protegendo o domínio." : "O site não possui uma política de segurança de conteúdo.",
+                explanation: "O CSP é uma barreira contra ataques de Injeção (XSS), definindo quais scripts e imagens podem ser carregados na página."
+            });
+
+            // Check 4: Clickjacking
+            const hasAntiClick = obs?.tests?.['x-frame-options']?.pass || false;
+            checks.push({
+                name: "Proteção contra Clickjacking",
+                status: hasAntiClick ? 'pass' : 'warn',
+                description: hasAntiClick ? "Headers de Frame protegidos." : "Vulnerável a ataques de sobreposição de interface.",
+                explanation: "Impede que hackers 'escondam' o site dentro de uma moldura invisível para enganar você e capturar seus cliques."
+            });
+
+            return checks;
+        }
+
+        function computeScore(checks) {
+            const weights = { 'pass': 25, 'warn': 10, 'fail': 0 };
+            return checks.reduce((acc, check) => acc + weights[check.status], 0);
+        }
+
+        async function callGemini(userQuery) {
+            let retries = 0;
+            const delays = [1000, 2000, 4000];
+            
+            while (retries < 3) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: userQuery }] }],
+                            systemInstruction: { parts: [{ text: "Você é a IA do CYBER_FOX. Seja técnico porém didático. Retorne APENAS JSON." }] },
+                            generationConfig: { responseMimeType: "application/json" }
+                        })
+                    });
+                    const data = await response.json();
+                    return JSON.parse(data.candidates[0].content.parts[0].text);
+                } catch (e) {
+                    retries++;
+                    await new Promise(r => setTimeout(r, delays[retries-1]));
+                }
+            }
+            return { summary: "Análise concluída com sucesso.", insight: "Mantenha seus cabeçalhos de segurança atualizados." };
+        }
+
+        function displayResults(data, learningMode) {
+            document.getElementById('results').classList.remove('hidden-content');
+            document.getElementById('scoreValue').innerText = data.score;
+            document.getElementById('statusDesc').innerText = data.summary;
+            document.getElementById('aiInsight').innerText = data.insight;
+
+            const scoreRing = document.getElementById('scoreRing');
+            const statusIcon = document.getElementById('statusIcon');
+            
+            if (data.score > 75) {
+                scoreRing.className = "relative w-32 h-32 flex items-center justify-center rounded-full border-8 border-green-500";
+                statusIcon.className = "text-5xl mb-3 text-green-500";
+                statusIcon.innerHTML = '<i class="fas fa-shield-check"></i>';
+            } else if (data.score > 40) {
+                scoreRing.className = "relative w-32 h-32 flex items-center justify-center rounded-full border-8 border-yellow-500";
+                statusIcon.className = "text-5xl mb-3 text-yellow-500";
+                statusIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            } else {
+                scoreRing.className = "relative w-32 h-32 flex items-center justify-center rounded-full border-8 border-red-500";
+                statusIcon.className = "text-5xl mb-3 text-red-500";
+                statusIcon.innerHTML = '<i class="fas fa-radiation"></i>';
+            }
+
+            const list = document.getElementById('checksList');
+            list.innerHTML = '';
+            
+            data.checks.forEach(check => {
+                const colorClass = check.status === 'pass' ? 'text-green-500 bg-green-500/10' : 
+                                   check.status === 'warn' ? 'text-yellow-500 bg-yellow-500/10' : 'text-red-500 bg-red-500/10';
+                const icon = check.status === 'pass' ? 'fa-check' : 
+                             check.status === 'warn' ? 'fa-exclamation' : 'fa-xmark';
+
+                list.innerHTML += `
+                    <div class="glass-card p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="${colorClass} p-3 rounded-lg">
+                                <i class="fas ${icon} text-xl"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-bold text-lg">${check.name}</h4>
+                                    <span class="text-xs font-mono opacity-50 uppercase">${check.status}</span>
+                                </div>
+                                <p class="text-gray-300 leading-relaxed mb-2">${check.description}</p>
+                                ${learningMode ? `
+                                    <div class="mt-4 pt-3 border-t border-white/5">
+                                        <p class="text-xs font-bold text-orange-500 uppercase tracking-tighter flex items-center gap-1">
+                                            <i class="fas fa-graduation-cap"></i> Conhecimento Neural
+                                        </p>
+                                        <p class="text-sm text-gray-400 italic mt-1">${check.explanation}</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateStep(text) {
+            document.getElementById('scanningStep').innerText = text;
+        }
+
+        function showError(msg) {
+            const toast = document.getElementById('errorToast');
+            document.getElementById('errorMessage').innerText = msg;
+            toast.classList.remove('translate-y-20');
+            setTimeout(() => toast.classList.add('translate-y-20'), 4000);
+        }
+    </script>
+</body>
+</html>
